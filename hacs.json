@@ -1,0 +1,7 @@
+{
+    "name": "Eskom Loadshedding Interface",
+    "domains": [
+        "sensor"
+    ],
+    "iot_class": "Cloud Polling"
+}
