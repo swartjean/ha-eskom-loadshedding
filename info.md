@@ -9,13 +9,13 @@ Platform | Description
 `sensor` | Show loadshedding status information.
 
 {% if not installed %}
-## Installation
+### Installation
 
 1. Click install.
 1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Eskom Loadshedding Interface".
 
 {% endif %}
 
-## Configuration is done in the UI
+### Configuration is done in the UI
 
 <!---->
