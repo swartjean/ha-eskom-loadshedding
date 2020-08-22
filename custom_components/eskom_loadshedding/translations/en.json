@@ -1,0 +1,12 @@
+{
+    "options": {
+        "step": {
+            "user": {
+                "data": {
+                    "scan_period": "Scan Period (s)",
+                    "sensor": "Enable Sensor"
+                }
+            }
+        }
+    }
+}

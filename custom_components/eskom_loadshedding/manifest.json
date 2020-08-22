@@ -1,0 +1,13 @@
+{
+  "domain": "eskom_loadshedding",
+  "name": "Eskom Loadshedding Interface",
+  "documentation": "https://github.com/swartjean/ha-eskom-loadshedding",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": [
+    "@swartjean"
+  ],
+  "requirements": [
+    "requests"
+  ]
+}
