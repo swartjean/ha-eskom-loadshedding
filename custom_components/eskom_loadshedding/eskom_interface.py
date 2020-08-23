@@ -1,4 +1,5 @@
 from aiohttp_retry import RetryClient
+from aiohttp.client_exceptions import ClientConnectorError, ServerDisconnectedError
 
 
 class eskom_interface:
@@ -7,7 +8,7 @@ class eskom_interface:
     def __init__(self):
         """Initializes class parameters"""
 
-        self.base_url = "http://loadshedding.eskom.co.za/LoadShedding"
+        self.base_url = "https://loadshedding.eskom.co.za/LoadShedding"
         self.headers = {
             "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
         }
@@ -23,15 +24,21 @@ class eskom_interface:
             The response object from the request
         """
         async with RetryClient() as client:
+            # The Eskom API occasionally drops incoming connections, implement reies
             async with client.get(
                 url=self.base_url + endpoint,
                 headers=self.headers,
                 params=payload,
-                retry_attempts=5,
+                retry_attempts=10,
+                retry_exceptions={
+                    ClientConnectorError,
+                    ServerDisconnectedError,
+                    ConnectionError,
+                },
             ) as res:
                 return await res.json()
 
-    async def async_get_stage(self, attempts=5):
+    async def async_get_stage(self, attempts=10):
         """Fetches the current loadshedding stage from the Eskom API
 
         Args:
