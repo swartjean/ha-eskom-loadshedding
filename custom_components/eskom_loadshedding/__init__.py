@@ -74,7 +74,7 @@ class EskomDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            data = self.api.get_data()
+            data = await self.api.async_get_data()
             return data.get("data", {})
         except Exception as exception:
             raise UpdateFailed(exception)

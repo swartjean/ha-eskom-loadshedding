@@ -8,6 +8,6 @@
     "@swartjean"
   ],
   "requirements": [
-    "requests"
+    "aiohttp_retry"
   ]
 }
