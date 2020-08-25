@@ -29,16 +29,17 @@ class eskom_interface:
                 url=self.base_url + endpoint,
                 headers=self.headers,
                 params=payload,
-                retry_attempts=10,
+                retry_attempts=50,
                 retry_exceptions={
                     ClientConnectorError,
                     ServerDisconnectedError,
                     ConnectionError,
+                    OSError,
                 },
             ) as res:
                 return await res.json()
 
-    async def async_get_stage(self, attempts=10):
+    async def async_get_stage(self, attempts=50):
         """Fetches the current loadshedding stage from the Eskom API
 
         Args:
