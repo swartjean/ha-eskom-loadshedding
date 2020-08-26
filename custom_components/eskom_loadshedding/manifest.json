@@ -7,8 +7,5 @@
   "codeowners": [
     "@swartjean"
   ],
-  "requirements": [
-    "aiohttp_retry",
-    "aiohttp"
-  ]
+  "requirements": []
 }
