@@ -2,6 +2,7 @@
   "domain": "eskom_loadshedding",
   "name": "Eskom Loadshedding Interface",
   "documentation": "https://github.com/swartjean/ha-eskom-loadshedding",
+  "issue_tracker": "https://github.com/swartjean/ha-eskom-loadshedding/issues",  
   "dependencies": [],
   "config_flow": true,
   "codeowners": [
