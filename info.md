@@ -39,5 +39,5 @@ Platform | Description
 [license-shield]: https://img.shields.io/github/license/swartjean/ha-eskom-loadshedding.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Jean%20Swart%20%40swartjean-blue.svg?style=for-the-badge
 [maintainer]: https://github.com/swartjean
-[releases-shield]: https://img.shields.io/github/release/swartjean/ha-eskom-loadshedding.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/v/release/swartjean/ha-eskom-loadshedding?style=for-the-badge
 [releases]: https://github.com/swartjean/ha-eskom-loadshedding/releases
