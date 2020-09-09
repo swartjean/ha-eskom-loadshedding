@@ -10,7 +10,7 @@
 
 This is a simple component to integrate with the [Eskom Loadshedding API](https://loadshedding.eskom.co.za/LoadShedding) and provide [loadshedding](https://en.wikipedia.org/wiki/South_African_energy_crisis)-related status information.
 
-This integration exposes a sensor for the current stage of loadshedding. Due to current issues with the Eskom API, additional features (schedule lookups, etc) are unavailable. These will be implemented once the issues are resolved.
+This integration exposes a sensor for the current stage of loadshedding.
 
 **This component will set up the following platforms.**
 
@@ -35,7 +35,7 @@ Platform | Description
 [commits-shield]: https://img.shields.io/github/commit-activity/y/swartjean/ha-eskom-loadshedding.svg?style=for-the-badge
 [commits]: https://github.com/swartjean/ha-eskom-loadshedding/commits/master
 [hacs]: https://github.com/custom-components/hacs
-[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
+[hacsbadge]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
 [license-shield]: https://img.shields.io/github/license/swartjean/ha-eskom-loadshedding.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Jean%20Swart%20%40swartjean-blue.svg?style=for-the-badge
 [maintainer]: https://github.com/swartjean
