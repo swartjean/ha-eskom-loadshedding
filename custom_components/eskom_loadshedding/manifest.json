@@ -8,5 +8,5 @@
   "codeowners": [
     "@swartjean"
   ],
-  "requirements": []
+  "requirements": ["aiohttp-retry==1.0"]
 }
