@@ -1,5 +1,7 @@
-from aiohttp_retry import RetryClient
+import ssl
+
 from aiohttp.client_exceptions import ClientConnectorError, ServerDisconnectedError
+from aiohttp_retry import RetryClient
 
 
 class eskom_interface:
@@ -12,6 +14,8 @@ class eskom_interface:
         self.headers = {
             "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
         }
+        self.ssl_context = ssl.create_default_context()
+        self.ssl_context.set_ciphers("DEFAULT@SECLEVEL=1")
 
     async def async_query_api(self, endpoint, payload=None):
         """Queries a given endpoint on the Eskom loadshedding API with the specified payload
@@ -29,6 +33,7 @@ class eskom_interface:
                 url=self.base_url + endpoint,
                 headers=self.headers,
                 params=payload,
+                ssl=self.ssl_context,
                 retry_attempts=50,
                 retry_exceptions={
                     ClientConnectorError,
