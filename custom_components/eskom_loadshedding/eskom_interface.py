@@ -44,29 +44,41 @@ class eskom_interface:
             ) as res:
                 return await res.json()
 
-    async def async_get_stage(self, attempts=50):
+    async def async_get_stage(self, attempts=30):
         """Fetches the current loadshedding stage from the Eskom API
 
         Args:
-            attempts (int, optional): The number of attempts to query a sane value from the Eskom API. Defaults to 5.
+            attempts (int, optional): The number of attempts to query a sane value from the Eskom API. Defaults to 30.
 
         Returns:
             The loadshedding stage if the query succeeded, else `None`
         """
 
+        # Placeholder for returned loadshedding stage
+        api_result = None
+
         # Query the API until a sensible (> 0) value is received, or the number of attempts is exceeded
         for attempt in range(attempts):
             res = await self.async_query_api("/GetStatus")
 
-            # Return the current loadshedding stage by subtracting 1 from the query result
-            # Occasionally the Eskom API will return a negative stage, so simply retry if this occurs
-            if res and int(res) > 0:
-                return int(res) - 1
+            # Check if the API returned a valid response
+            if res:
+                # Store the response
+                api_result = res
 
-        # If the query does not succeed after the number of attempts has been exceeded, raise an exception
-        raise Exception(
-            f"Error, invalid loadshedding stage received from API after {attempts} attempts"
-        )
+                # Only return the result if the API returned a non-negative stage, otherwise retry
+                if int(res) > 0:
+                    # Return the current loadshedding stage by subtracting 1 from the query result
+                    return int(res) - 1
+
+        if api_result:
+            # If the API is up but returning "invalid" stages (< 0), simply return 0
+            return 0
+        else:
+            # If the API the query did not succeed after the number of attempts has been exceeded, raise an exception
+            raise Exception(
+                f"Error, no response received from API after {attempts} attempts"
+            )
 
     async def async_get_data(self):
         """Fetches data from the loadshedding API"""

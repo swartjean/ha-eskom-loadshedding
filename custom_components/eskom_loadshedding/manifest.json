@@ -2,12 +2,14 @@
   "domain": "eskom_loadshedding",
   "name": "Eskom Loadshedding Interface",
   "documentation": "https://github.com/swartjean/ha-eskom-loadshedding",
-  "issue_tracker": "https://github.com/swartjean/ha-eskom-loadshedding/issues",  
+  "issue_tracker": "https://github.com/swartjean/ha-eskom-loadshedding/issues",
   "dependencies": [],
   "config_flow": true,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "codeowners": [
     "@swartjean"
   ],
-  "requirements": ["aiohttp-retry==1.0"]
+  "requirements": [
+    "aiohttp-retry==1.0"
+  ]
 }

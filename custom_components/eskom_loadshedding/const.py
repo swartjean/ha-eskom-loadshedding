@@ -3,7 +3,7 @@
 NAME = "Eskom Loadshedding Interface"
 DOMAIN = "eskom_loadshedding"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 
 ISSUE_URL = "https://github.com/swartjean/ha-eskom-loadshedding/issues"
 
