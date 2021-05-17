@@ -44,11 +44,11 @@ class eskom_interface:
             ) as res:
                 return await res.json()
 
-    async def async_get_stage(self, attempts=30):
+    async def async_get_stage(self, attempts=5):
         """Fetches the current loadshedding stage from the Eskom API
 
         Args:
-            attempts (int, optional): The number of attempts to query a sane value from the Eskom API. Defaults to 30.
+            attempts (int, optional): The number of attempts to query a sane value from the Eskom API. Defaults to 5.
 
         Returns:
             The loadshedding stage if the query succeeded, else `None`
