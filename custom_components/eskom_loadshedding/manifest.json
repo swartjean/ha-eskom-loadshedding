@@ -5,7 +5,7 @@
   "issue_tracker": "https://github.com/swartjean/ha-eskom-loadshedding/issues",
   "dependencies": [],
   "config_flow": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "codeowners": [
     "@swartjean"
   ],
