@@ -9,8 +9,6 @@
   "codeowners": [
     "@swartjean"
   ],
-  "requirements": [
-    "aiohttp-retry==1.0"
-  ],
+  "requirements": [],
   "iot_class": "cloud_polling"
 }
