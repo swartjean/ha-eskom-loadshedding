@@ -8,21 +8,57 @@
 [![maintainer][maintenance-shield]][maintainer]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-This is a simple component to integrate with the [Eskom Loadshedding API](https://loadshedding.eskom.co.za/LoadShedding) and provide [loadshedding](https://en.wikipedia.org/wiki/South_African_energy_crisis)-related status information.
+This component integrates with the [EskomSePush](https://sepush.co.za/) API to provide [loadshedding](https://en.wikipedia.org/wiki/South_African_energy_crisis)-related status information.
 
-This integration exposes a sensor for the current stage of loadshedding.
+An EskomSePush API key is required in order to use this integration. Please visit the [EskomSePush website](https://sepush.co.za/) to sign up and view API documentation.
 
-**This component will set up the following platforms.**
+**This component will set up the following platforms:**
 
 Platform | Description
 -- | --
-`sensor` | Show loadshedding status information.
+`sensor` | Shows loadshedding status information for various areas.
+`calendar` | Shows upcoming loadshedding event and schedule information for your area.
+
+**This component will create the following entities:**
+
+Entity | Description
+-- | --
+`sensor.loadshedding_api_quota` | The EskomSePush API quota associated with your API key.
+`sensor.loadshedding_national_status` | The current national loadshedding stage for Eskom-supplied customers.
+`sensor.loadshedding_cape_town_status` | The current loadshedding stage for City of Cape Town customers.
+`sensor.loadshedding_local_status` | The current loadshedding stage for your specific area.
+`calendar.loadshedding_local_events` | Calendar of upcoming loadshedding events for your specific area.
+`calendar.loadshedding_local_schedule` | Calendar containing the full 7-day loadshedding schedule for your specific area.
+
+The component update period defaults to 2 hours in order to avoid excess API quota consumption. This can be edited through the integration configuration, but you are responsible for monitoring your own API usage.
+
+The recommended way to automate actions around loadshedding events is to use calendar triggers. Below is an example of a simple automation to turn off a switch one hour before any loadshedding event in your area:
+
+```yaml
+alias: Loadshedding Notification
+trigger:
+  - platform: calendar
+    event: start
+    entity_id: calendar.loadshedding_local_events
+    offset: "-1:0:0"
+action:
+  - service: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id: switch.example_device
+mode: queued
+```
+
+Note that by installing this integration you are using it at your own risk. Neither the creators of this integration, nor the EskomSePush team, will be held responsible for any inaccuracies or errors in the loadshedding information presented.
 
 {% if not installed %}
 ## Installation
 
+**Note that an EskomSePush API key is required in order to use this integration**
+
 1. Click install.
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Eskom Loadshedding Interface".
+7. In the HA UI go to "Settings" -> "Devices & Services", then click "+ Add Integration" and search for "Eskom Loadshedding Interface"
+3. Complete the initial configuration by entering your EskomSePush API key and selecting your loadshedding zone
 
 {% endif %}
 
