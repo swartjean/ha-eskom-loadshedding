@@ -13,14 +13,12 @@
                 }
             },
             "area_search": {
-                "title": "Eskom Loadshedding Interface",
                 "description": "Please enter the name of your area, suburb, or municipality:",
                 "data": {
                     "area_search": "Area"
                 }
             },
             "area_selection": {
-                "title": "Eskom Loadshedding Interface",
                 "description": "Please select your area from the list below:",
                 "data": {
                     "area_selection": "Area"
