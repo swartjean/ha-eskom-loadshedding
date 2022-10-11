@@ -11,8 +11,8 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from .eskom_interface import eskom_interface
 
 from .const import (
     CONF_SCAN_PERIOD,
@@ -21,12 +21,13 @@ from .const import (
     PLATFORMS,
     STARTUP_MESSAGE,
 )
+from .eskom_interface import EskomInterface
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass: HomeAssistant, config: Config):
-    """Set up this integration using YAML is not supported."""
+    """Setting up this integration using YAML is not supported."""
     return True
 
 
@@ -40,7 +41,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         seconds=entry.options.get(CONF_SCAN_PERIOD, DEFAULT_SCAN_PERIOD)
     )
 
-    coordinator = EskomDataUpdateCoordinator(hass, scan_period)
+    # Fetch the configured API key and area ID and create the client
+    api_key = entry.data.get("api_key")
+    area_id = entry.data.get("area_id")
+    session = async_get_clientsession(hass)
+    client = EskomInterface(session=session, api_key=api_key, area_id=area_id)
+
+    coordinator = EskomDataUpdateCoordinator(hass, scan_period, client)
     await coordinator.async_refresh()
 
     if not coordinator.last_update_success:
@@ -64,9 +71,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 class EskomDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
-    def __init__(self, hass, scan_period):
+    def __init__(self, hass, scan_period, client: EskomInterface):
         """Initialize."""
-        self.api = eskom_interface()
+        self.client = client
         self.platforms = []
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=scan_period)
@@ -74,8 +81,7 @@ class EskomDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            data = await self.api.async_get_data()
-            return data.get("data", {})
+            return await self.client.async_get_data()
         except Exception as exception:
             raise UpdateFailed(exception)
 

@@ -1,89 +1,107 @@
-import ssl
+import asyncio
+import logging
+import socket
 
-from aiohttp.client_exceptions import ClientConnectorError, ServerDisconnectedError
-from aiohttp_retry import RetryClient
+import aiohttp
+
+from .const import BASE_API_URL, REQUEST_TIMEOUT_S  # pylint: disable=unused-import
+
+_LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-class eskom_interface:
-    """Interface class to obtain loadshedding information using the Eskom API"""
+class EskomInterface:
+    """Interface class to obtain loadshedding information using the EskomSePush API"""
 
-    def __init__(self):
+    def __init__(
+        self, session: aiohttp.ClientSession, api_key: str, area_id: str = None
+    ):
         """Initializes class parameters"""
-
-        self.base_url = "https://loadshedding.eskom.co.za/LoadShedding"
+        self.session = session
+        self.api_key = api_key
+        self.area_id = area_id
+        self.base_url = BASE_API_URL
         self.headers = {
-            "user_agent": "Mozilla/5.0 (X11; Linux x86_64; rv:69.0) Gecko/20100101 Firefox/69.0"
+            "Token": api_key,
         }
-        self.ssl_context = ssl.create_default_context()
-        self.ssl_context.set_ciphers("DEFAULT@SECLEVEL=1")
 
-    async def async_query_api(self, endpoint, payload=None):
-        """Queries a given endpoint on the Eskom loadshedding API with the specified payload
+    async def async_query_api(self, endpoint: str, payload: dict = None):
+        """Queries a given endpoint on the EskomSePush API with the specified payload
 
         Args:
-            endpoint (string): The endpoint of the Eskom API
+            endpoint (string): The endpoint of the EskomSePush API
             payload (dict, optional): The parameters to apply to the query. Defaults to None.
 
         Returns:
             The response object from the request
         """
-        async with RetryClient() as client:
-            # The Eskom API occasionally drops incoming connections, implement reies
-            async with client.get(
-                url=self.base_url + endpoint,
+        query_url = self.base_url + endpoint
+        try:
+            async with self.session.get(
+                url=query_url,
                 headers=self.headers,
                 params=payload,
-                ssl=self.ssl_context,
-                retry_attempts=50,
-                retry_exceptions={
-                    ClientConnectorError,
-                    ServerDisconnectedError,
-                    ConnectionError,
-                    OSError,
-                },
-            ) as res:
-                return await res.json()
-
-    async def async_get_stage(self, attempts=5):
-        """Fetches the current loadshedding stage from the Eskom API
-
-        Args:
-            attempts (int, optional): The number of attempts to query a sane value from the Eskom API. Defaults to 5.
-
-        Returns:
-            The loadshedding stage if the query succeeded, else `None`
-        """
-
-        # Placeholder for returned loadshedding stage
-        api_result = None
-
-        # Query the API until a sensible (> 0) value is received, or the number of attempts is exceeded
-        for attempt in range(attempts):
-            res = await self.async_query_api("/GetStatus")
-
-            # Check if the API returned a valid response
-            if res:
-                # Store the response
-                api_result = res
-
-                # Only return the result if the API returned a non-negative stage, otherwise retry
-                if int(res) > 0:
-                    # Return the current loadshedding stage by subtracting 1 from the query result
-                    return int(res) - 1
-
-        if api_result:
-            # If the API is up but returning "invalid" stages (< 0), simply return 0
-            return 0
-        else:
-            # If the API the query did not succeed after the number of attempts has been exceeded, raise an exception
-            raise Exception(
-                f"Error, no response received from API after {attempts} attempts"
+                timeout=REQUEST_TIMEOUT_S,
+            ) as resp:
+                return await resp.json()
+        except aiohttp.ClientResponseError as exception:
+            _LOGGER.error(
+                "Error fetching information from %s. Response code: %s",
+                query_url,
+                exception.status,
+            )
+            # Re-raise the ClientResponseError to allow checking for valid headers during config
+            # These will be caught by the DataUpdateCoordinator
+            raise
+        except asyncio.TimeoutError as exception:
+            _LOGGER.error(
+                "Timeout fetching information from %s: %s",
+                query_url,
+                exception,
+            )
+        except (KeyError, TypeError) as exception:
+            _LOGGER.error(
+                "Error parsing information from %s: %s",
+                query_url,
+                exception,
+            )
+        except (aiohttp.ClientError, socket.gaierror) as exception:
+            _LOGGER.error(
+                "Error fetching information from %s: %s",
+                query_url,
+                exception,
             )
 
+    async def async_get_status(self) -> dict:
+        """Fetches the current loadshedding status"""
+        # Query the API
+        return await self.async_query_api("/status")
+
+    async def async_get_allowance(self):
+        """Fetches the current API allowance"""
+        # Query the API
+        return await self.async_query_api("/api_allowance")
+
+    async def async_get_area_information(self):
+        """Fetches local loadshedding event information"""
+        # Query the API
+        payload = {"id": self.area_id}
+        return await self.async_query_api("/area", payload=payload)
+
+    async def async_search_areas(self, area_search: str):
+        """Searches for areas matching a search string"""
+        # Query the API
+        payload = {"text": area_search}
+        return await self.async_query_api("/areas_search", payload=payload)
+
     async def async_get_data(self):
-        """Fetches data from the loadshedding API"""
-        stage = await self.async_get_stage()
+        """Fetches all relevant data from the loadshedding API"""
+        allowance = await self.async_get_allowance()
+        status = await self.async_get_status()
+        area_information = await self.async_get_area_information()
+
         data = {
-            "data": {"stage": stage},
+            "allowance": allowance,
+            "status": status,
+            "area_information": area_information,
         }
         return data

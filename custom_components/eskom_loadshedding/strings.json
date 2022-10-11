@@ -1,10 +1,38 @@
 {
+    "config": {
+        "error": {
+            "auth": "The API key provided is not valid.",
+            "bad_area": "No matching areas found or quota exceeded.",
+            "no_area_selection": "No area selected."
+        },
+        "step": {
+            "user": {
+                "description": "This integration uses the EskomSePush API (https://sepush.co.za/) to obtain loadshedding data. Please enter your API key to continue:",
+                "data": {
+                    "api_key": "API Key"
+                }
+            },
+            "area_search": {
+                "description": "Please enter the name of your area, suburb, or municipality:",
+                "data": {
+                    "area_search": "Area"
+                }
+            },
+            "area_selection": {
+                "description": "Please select your area from the list below:",
+                "data": {
+                    "area_selection": "Area"
+                }
+            }
+        }
+    },
     "options": {
         "step": {
             "user": {
                 "data": {
                     "scan_period": "Scan Period (s)",
-                    "sensor": "Enable Sensor"
+                    "sensor": "Enable Sensors",
+                    "calendar": "Enable Calendars"
                 }
             }
         }
