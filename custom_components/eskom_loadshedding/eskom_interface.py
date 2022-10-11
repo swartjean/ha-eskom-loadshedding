@@ -9,7 +9,7 @@ from .const import BASE_API_URL, REQUEST_TIMEOUT_S  # pylint: disable=unused-imp
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-class eskom_interface:
+class EskomInterface:
     """Interface class to obtain loadshedding information using the EskomSePush API"""
 
     def __init__(

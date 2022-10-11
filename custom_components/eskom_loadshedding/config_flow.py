@@ -14,7 +14,7 @@ from .const import (  # pylint: disable=unused-import
     MIN_SCAN_PERIOD,
     PLATFORMS,
 )
-from .eskom_interface import eskom_interface
+from .eskom_interface import EskomInterface
 
 
 class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -51,6 +51,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return await self._show_user_config_form(user_input)
 
     async def async_step_area_search(self, user_input=None):
+        """Collect area search information from the user"""
         self._errors = {}
 
         if user_input is not None:
@@ -60,9 +61,11 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             if areas:
                 # Store the areas for use in the next step
                 self.area_list = areas["areas"]
-                return await self.async_step_area_selection()
-            else:
-                self._errors["base"] = "bad_area"
+
+                if self.area_list:
+                    return await self.async_step_area_selection()
+
+            self._errors["base"] = "bad_area"
 
             return await self._show_area_config_form(user_input)
 
@@ -72,6 +75,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return await self._show_area_config_form(user_input)
 
     async def async_step_area_selection(self, user_input=None):
+        """Collect an area selection from the user"""
         self._errors = {}
 
         if user_input is not None:
@@ -133,7 +137,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         # Perform an api allowance check using the provided token
         try:
             session = async_create_clientsession(self.hass)
-            interface = eskom_interface(session=session, api_key=api_key)
+            interface = EskomInterface(session=session, api_key=api_key)
             await interface.async_query_api("/api_allowance")
             return True
         except Exception:  # pylint: disable=broad-except
@@ -143,7 +147,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def search_area(self, area_search: str) -> dict:
         """Performs an area search using the EskomSePush API"""
         session = async_create_clientsession(self.hass)
-        interface = eskom_interface(session=session, api_key=self.api_key)
+        interface = EskomInterface(session=session, api_key=self.api_key)
         return await interface.async_search_areas(area_search)
 
 

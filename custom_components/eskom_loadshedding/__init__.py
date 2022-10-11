@@ -21,7 +21,7 @@ from .const import (
     PLATFORMS,
     STARTUP_MESSAGE,
 )
-from .eskom_interface import eskom_interface
+from .eskom_interface import EskomInterface
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     api_key = entry.data.get("api_key")
     area_id = entry.data.get("area_id")
     session = async_get_clientsession(hass)
-    client = eskom_interface(session=session, api_key=api_key, area_id=area_id)
+    client = EskomInterface(session=session, api_key=api_key, area_id=area_id)
 
     coordinator = EskomDataUpdateCoordinator(hass, scan_period, client)
     await coordinator.async_refresh()
@@ -71,7 +71,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 class EskomDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
-    def __init__(self, hass, scan_period, client: eskom_interface):
+    def __init__(self, hass, scan_period, client: EskomInterface):
         """Initialize."""
         self.client = client
         self.platforms = []
