@@ -138,8 +138,11 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             session = async_create_clientsession(self.hass)
             interface = EskomInterface(session=session, api_key=api_key)
-            await interface.async_query_api("/api_allowance")
-            return True
+            data = await interface.async_query_api("/api_allowance")
+            if "error" in data:
+                return False
+            else:
+                return True
         except Exception:  # pylint: disable=broad-except
             pass
         return False
