@@ -25,6 +25,7 @@ CONF_SCAN_PERIOD = "scan_period"
 # Defaults
 DEFAULT_SCAN_PERIOD = 7200
 MIN_SCAN_PERIOD = 1800
+DEFAULT_CALENDAR_SCAN_PERIOD = 30
 
 # Entity Identifiers
 LOCAL_EVENTS_ID = "calendar_local_events"
