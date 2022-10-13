@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import re
 
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
+from homeassistant.core import callback
 
 from .const import (
     DOMAIN,
@@ -10,8 +11,11 @@ from .const import (
     LOCAL_EVENTS_NAME,
     LOCAL_SCHEDULE_ID,
     LOCAL_SCHEDULE_NAME,
+    DEFAULT_CALENDAR_SCAN_PERIOD,
 )
 from .entity import EskomEntity
+
+SCAN_INTERVAL = timedelta(seconds=DEFAULT_CALENDAR_SCAN_PERIOD)
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -57,6 +61,15 @@ class LoadsheddingLocalEventCalendar(EskomEntity, CalendarEntity):
         return self.friendly_name
 
     @property
+    def should_poll(self) -> bool:
+        """Enable polling for the entity.
+
+        The coordinator is used to query the API, but polling is used to update
+        the entity state more frequently.
+        """
+        return True
+
+    @property
     def event(self):
         # Return the next event
         events = self.coordinator.data.get("area_information", {}).get("events", {})
@@ -65,6 +78,21 @@ class LoadsheddingLocalEventCalendar(EskomEntity, CalendarEntity):
             next_event_start = datetime.strptime(events[0]["start"], time_format)
             next_event_end = datetime.strptime(events[0]["end"], time_format)
             return CalendarEvent(next_event_start, next_event_end, events[0]["note"])
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        # Copy the state from the coordinator to this entity
+        events = self.coordinator.data.get("area_information", {}).get("events", {})
+        if events:
+            time_format = "%Y-%m-%dT%H:%M:%S%z"
+            next_event_start = datetime.strptime(events[0]["start"], time_format)
+            next_event_end = datetime.strptime(events[0]["end"], time_format)
+            self._event = CalendarEvent(
+                next_event_start, next_event_end, events[0]["note"]
+            )
+
+        super()._handle_coordinator_update()
 
     async def async_get_events(
         self,
@@ -86,6 +114,12 @@ class LoadsheddingLocalEventCalendar(EskomEntity, CalendarEntity):
             ]
         else:
             return []
+
+    async def async_update(self) -> None:
+        """Disable update behavior.
+        Event updates are performed through the coordinator callback.
+        This is simply used to evaluate the entity state
+        """
 
 
 class LoadsheddingLocalScheduleCalendar(EskomEntity, CalendarEntity):
@@ -110,6 +144,15 @@ class LoadsheddingLocalScheduleCalendar(EskomEntity, CalendarEntity):
         return self.friendly_name
 
     @property
+    def should_poll(self) -> bool:
+        """Enable polling for the entity.
+
+        The coordinator is used to query the API, but polling is used to update
+        the entity state more frequently.
+        """
+        return True
+
+    @property
     def event(self):
         # Return the next event
         events = self.coordinator.data.get("area_information", {}).get("events", {})
@@ -118,6 +161,21 @@ class LoadsheddingLocalScheduleCalendar(EskomEntity, CalendarEntity):
             next_event_start = datetime.strptime(events[0]["start"], time_format)
             next_event_end = datetime.strptime(events[0]["end"], time_format)
             return CalendarEvent(next_event_start, next_event_end, events[0]["note"])
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        # Copy the state from the coordinator to this entity
+        events = self.coordinator.data.get("area_information", {}).get("events", {})
+        if events:
+            time_format = "%Y-%m-%dT%H:%M:%S%z"
+            next_event_start = datetime.strptime(events[0]["start"], time_format)
+            next_event_end = datetime.strptime(events[0]["end"], time_format)
+            self._event = CalendarEvent(
+                next_event_start, next_event_end, events[0]["note"]
+            )
+
+        super()._handle_coordinator_update()
 
     async def async_get_events(
         self,
@@ -159,3 +217,9 @@ class LoadsheddingLocalScheduleCalendar(EskomEntity, CalendarEntity):
             return calendar_events
         else:
             return []
+
+    async def async_update(self) -> None:
+        """Disable update behavior.
+        Event updates are performed through the coordinator callback.
+        This is simply used to evaluate the entity state
+        """
