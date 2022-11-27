@@ -27,9 +27,13 @@
         }
     },
     "options": {
+        "error": {
+            "auth": "The API key provided is not valid."
+        },
         "step": {
             "user": {
                 "data": {
+                    "api_key": "API Key",
                     "scan_period": "Scan Period (s)",
                     "sensor": "Enable Sensors",
                     "calendar": "Enable Calendars"

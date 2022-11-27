@@ -16,6 +16,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CONF_SCAN_PERIOD,
+    CONF_API_KEY,
     DEFAULT_SCAN_PERIOD,
     DOMAIN,
     PLATFORMS,
@@ -42,7 +43,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     )
 
     # Fetch the configured API key and area ID and create the client
-    api_key = entry.data.get("api_key")
+    api_key = entry.options.get(CONF_API_KEY, entry.data.get("api_key"))
     area_id = entry.data.get("area_id")
     session = async_get_clientsession(hass)
     client = EskomInterface(session=session, api_key=api_key, area_id=area_id)

@@ -9,6 +9,7 @@ import voluptuous as vol
 
 from .const import (  # pylint: disable=unused-import
     CONF_SCAN_PERIOD,
+    CONF_API_KEY,
     DEFAULT_SCAN_PERIOD,
     DOMAIN,
     MIN_SCAN_PERIOD,
@@ -32,10 +33,10 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Validate the API key passed in by the user
-            valid = await self.validate_key(user_input["api_key"])
+            valid = await self.validate_key(user_input[CONF_API_KEY])
             if valid:
                 # Store info to use in next step
-                self.api_key = user_input["api_key"]
+                self.api_key = user_input[CONF_API_KEY]
 
                 # Proceed to the next configuration step
                 return await self.async_step_area_search()
@@ -46,7 +47,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return await self._show_user_config_form(user_input)
 
         user_input = {}
-        user_input["api_key"] = ""
+        user_input[CONF_API_KEY] = ""
 
         return await self._show_user_config_form(user_input)
 
@@ -84,8 +85,10 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title="Loadshedding Status",
                     data={
-                        "api_key": self.api_key,
                         "area_id": user_input["area_selection"],
+                    },
+                    options={
+                        CONF_API_KEY: self.api_key,
                     },
                 )
             else:
@@ -114,7 +117,9 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _show_user_config_form(self, user_input):
         """Show the configuration form."""
-        data_schema = {vol.Required("api_key", default=user_input["api_key"]): str}
+        data_schema = {
+            vol.Required(CONF_API_KEY, default=user_input[CONF_API_KEY]): str
+        }
 
         return self.async_show_form(
             step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
@@ -159,6 +164,7 @@ class EskomOptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         """Initialize HACS options flow."""
+        self._errors = {}
         self.config_entry = config_entry
         self.options = dict(config_entry.options)
 
@@ -168,14 +174,21 @@ class EskomOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
+        self._errors = {}
+
         if user_input is not None:
-            # Set a minimum scan period
-            if int(user_input[CONF_SCAN_PERIOD]) >= MIN_SCAN_PERIOD:
+            # Validate the API key
+            valid = await self.validate_key(user_input[CONF_API_KEY])
+            if valid:
+                # Set a minimum scan period
+                if int(user_input[CONF_SCAN_PERIOD]) < MIN_SCAN_PERIOD:
+                    user_input[CONF_SCAN_PERIOD] = MIN_SCAN_PERIOD
+
+                # Update all options
                 self.options.update(user_input)
                 return await self._update_options()
             else:
-                self.options[CONF_SCAN_PERIOD] = MIN_SCAN_PERIOD
-                return await self._update_options()
+                self._errors["base"] = "auth"
 
         data_schema = OrderedDict()
         data_schema[
@@ -185,11 +198,36 @@ class EskomOptionsFlowHandler(config_entries.OptionsFlow):
             )
         ] = int
 
+        data_schema[
+            vol.Optional(
+                CONF_API_KEY,
+                default=self.options.get(CONF_API_KEY, self.options.get(CONF_API_KEY)),
+            )
+        ] = str
+
         for x in sorted(PLATFORMS):
             data_schema[vol.Required(x, default=self.options.get(x, True))] = bool
 
-        return self.async_show_form(step_id="user", data_schema=vol.Schema(data_schema))
+        return self.async_show_form(
+            step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
+        )
 
     async def _update_options(self):
         """Update config entry options."""
         return self.async_create_entry(title="Home", data=self.options)
+
+    async def validate_key(self, api_key: str) -> bool:
+        """Validates an EskomSePush API token."""
+        # Perform an api allowance check using the provided token
+        try:
+            session = async_create_clientsession(self.hass)
+            interface = EskomInterface(session=session, api_key=api_key)
+            data = await interface.async_query_api("/api_allowance")
+
+            if "error" in data:
+                return False
+            else:
+                return True
+        except Exception:  # pylint: disable=broad-except
+            pass
+        return False

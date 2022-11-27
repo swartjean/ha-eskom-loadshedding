@@ -21,6 +21,7 @@ PLATFORMS = [SENSOR, CALENDAR]
 # Configuration and options
 CONF_ENABLED = "enabled"
 CONF_SCAN_PERIOD = "scan_period"
+CONF_API_KEY = "api_key"
 
 # Defaults
 DEFAULT_SCAN_PERIOD = 7200
