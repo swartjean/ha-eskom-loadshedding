@@ -5,7 +5,7 @@ NAME = "Eskom Loadshedding Interface"
 DEVICE_NAME = "Loadshedding"
 DOMAIN = "eskom_loadshedding"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 ISSUE_URL = "https://github.com/swartjean/ha-eskom-loadshedding/issues"
 
