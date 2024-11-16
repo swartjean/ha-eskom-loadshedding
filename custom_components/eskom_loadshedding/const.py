@@ -1,4 +1,5 @@
 """Constants for eskom loadshedding interface"""
+
 # Base component constants
 NAME = "Eskom Loadshedding Interface"
 DEVICE_NAME = "Loadshedding"

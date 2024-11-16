@@ -4,9 +4,10 @@ Custom integration to integrate the Eskom Loadshedding Interface with Home Assis
 For more details about this integration, please refer to
 https://github.com/swartjean/ha-eskom-loadshedding
 """
+
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -16,8 +17,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
-    CONF_SCAN_PERIOD,
     CONF_API_KEY,
+    CONF_SCAN_PERIOD,
     DEFAULT_SCAN_PERIOD,
     DOMAIN,
     PLATFORMS,
@@ -57,7 +58,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)      
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     if not entry.update_listeners:
         entry.add_update_listener(async_reload_entry)

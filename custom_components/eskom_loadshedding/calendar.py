@@ -1,17 +1,18 @@
 """Sensor platform for Eskom Loadshedding Interface."""
-from datetime import datetime, timedelta
+
 import re
+from datetime import datetime, timedelta
 
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.core import callback
 
 from .const import (
+    DEFAULT_CALENDAR_SCAN_PERIOD,
     DOMAIN,
     LOCAL_EVENTS_ID,
     LOCAL_EVENTS_NAME,
     LOCAL_SCHEDULE_ID,
     LOCAL_SCHEDULE_NAME,
-    DEFAULT_CALENDAR_SCAN_PERIOD,
 )
 from .entity import EskomEntity
 
@@ -62,7 +63,8 @@ class LoadsheddingLocalEventCalendar(EskomEntity, CalendarEntity):
 
     @property
     def should_poll(self) -> bool:
-        """Enable polling for the entity.
+        """
+        Enable polling for the entity.
 
         The coordinator is used to query the API, but polling is used to update
         the entity state more frequently.
@@ -112,11 +114,11 @@ class LoadsheddingLocalEventCalendar(EskomEntity, CalendarEntity):
                 )
                 for event in events
             ]
-        else:
-            return []
+        return []
 
     async def async_update(self) -> None:
-        """Disable update behavior.
+        """
+        Disable update behavior.
         Event updates are performed through the coordinator callback.
         This is simply used to evaluate the entity state
         """
@@ -145,7 +147,8 @@ class LoadsheddingLocalScheduleCalendar(EskomEntity, CalendarEntity):
 
     @property
     def should_poll(self) -> bool:
-        """Enable polling for the entity.
+        """
+        Enable polling for the entity.
 
         The coordinator is used to query the API, but polling is used to update
         the entity state more frequently.
@@ -215,11 +218,11 @@ class LoadsheddingLocalScheduleCalendar(EskomEntity, CalendarEntity):
                         )
 
             return calendar_events
-        else:
-            return []
+        return []
 
     async def async_update(self) -> None:
-        """Disable update behavior.
+        """
+        Disable update behavior.
         Event updates are performed through the coordinator callback.
         This is simply used to evaluate the entity state
         """

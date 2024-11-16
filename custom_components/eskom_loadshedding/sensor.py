@@ -1,6 +1,7 @@
 """Sensor platform for Eskom Loadshedding Interface."""
-from datetime import datetime
+
 import re
+from datetime import datetime
 
 from homeassistant.components.sensor import SensorEntity
 
@@ -156,10 +157,8 @@ class LoadsheddingAreaInfoSensor(EskomEntity, SensorEntity):
             matches = re.findall(r"\d+", events[0]["note"])
             if matches:
                 return int(matches[0])
-            else:
-                return events[0]["note"]
-        else:
-            return 0
+            return events[0]["note"]
+        return 0
 
     @property
     def icon(self):
@@ -219,6 +218,8 @@ class LoadsheddingAPIQuotaSensor(EskomEntity, SensorEntity):
         if allowance:
             return int(allowance["limit"]) - int(allowance["count"])
 
+        return None
+
     @property
     def icon(self):
         """Return the icon of the sensor."""
@@ -236,3 +237,4 @@ class LoadsheddingAPIQuotaSensor(EskomEntity, SensorEntity):
                 "Limit": int(allowance["limit"]),
                 "Type": allowance["type"],
             }
+        return None
