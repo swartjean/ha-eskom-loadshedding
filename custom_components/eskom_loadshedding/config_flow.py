@@ -1,15 +1,16 @@
 """Adds config flow for the Eskom Loadshedding Interface."""
+
 from collections import OrderedDict
 
+import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.selector import selector
-import voluptuous as vol
 
 from .const import (  # pylint: disable=unused-import
-    CONF_SCAN_PERIOD,
     CONF_API_KEY,
+    CONF_SCAN_PERIOD,
     DEFAULT_SCAN_PERIOD,
     DOMAIN,
     MIN_SCAN_PERIOD,
@@ -41,8 +42,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 # Proceed to the next configuration step
                 return await self.async_step_area_search()
 
-            else:
-                self._errors["base"] = "auth"
+            self._errors["base"] = "auth"
 
             return await self._show_user_config_form(user_input)
 
@@ -91,8 +91,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         CONF_API_KEY: self.api_key,
                     },
                 )
-            else:
-                self._errors["base"] = "no_area_selection"
+            self._errors["base"] = "no_area_selection"
 
         # Reformat the areas as label/value pairs for the selector
         area_options = [
@@ -146,8 +145,7 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data = await interface.async_query_api("/api_allowance")
             if "error" in data:
                 return False
-            else:
-                return True
+            return True
         except Exception:  # pylint: disable=broad-except
             pass
         return False
@@ -187,8 +185,7 @@ class EskomOptionsFlowHandler(config_entries.OptionsFlow):
                 # Update all options
                 self.options.update(user_input)
                 return await self._update_options()
-            else:
-                self._errors["base"] = "auth"
+            self._errors["base"] = "auth"
 
         data_schema = OrderedDict()
         data_schema[
@@ -226,8 +223,7 @@ class EskomOptionsFlowHandler(config_entries.OptionsFlow):
 
             if "error" in data:
                 return False
-            else:
-                return True
+            return True
         except Exception:  # pylint: disable=broad-except
             pass
         return False

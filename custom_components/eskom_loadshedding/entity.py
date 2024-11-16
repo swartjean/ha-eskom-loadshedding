@@ -1,4 +1,5 @@
 """EskomEntity class"""
+
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DEVICE_NAME, DOMAIN, VERSION

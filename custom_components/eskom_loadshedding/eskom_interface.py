@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import socket
 
@@ -25,7 +24,8 @@ class EskomInterface:
         }
 
     async def async_query_api(self, endpoint: str, payload: dict = None):
-        """Queries a given endpoint on the EskomSePush API with the specified payload
+        """
+        Queries a given endpoint on the EskomSePush API with the specified payload
 
         Args:
             endpoint (string): The endpoint of the EskomSePush API
@@ -33,6 +33,7 @@ class EskomInterface:
 
         Returns:
             The response object from the request
+
         """
         query_url = self.base_url + endpoint
         try:
@@ -52,7 +53,7 @@ class EskomInterface:
             # Re-raise the ClientResponseError to allow checking for valid headers during config
             # These will be caught by the DataUpdateCoordinator
             raise
-        except asyncio.TimeoutError as exception:
+        except TimeoutError as exception:
             _LOGGER.error(
                 "Timeout fetching information from %s: %s",
                 query_url,
