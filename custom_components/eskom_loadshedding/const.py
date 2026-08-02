@@ -5,7 +5,7 @@ NAME = "Eskom Loadshedding Interface"
 DEVICE_NAME = "Loadshedding"
 DOMAIN = "eskom_loadshedding"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "1.1.3"
+VERSION = "2.0.0"
 
 ISSUE_URL = "https://github.com/swartjean/ha-eskom-loadshedding/issues"
 
@@ -23,6 +23,10 @@ PLATFORMS = [SENSOR, CALENDAR]
 CONF_ENABLED = "enabled"
 CONF_SCAN_PERIOD = "scan_period"
 CONF_API_KEY = "api_key"
+CONF_AREA_ID = "v3_area_id"
+CONF_SCHEDULE_ID = "schedule_id"
+CONF_AREA_NAME = "area_name"
+CONF_AREA_REGION = "area_region"
 
 # Defaults
 DEFAULT_SCAN_PERIOD = 7200
@@ -48,7 +52,7 @@ LOCAL_STATUS_NAME = "Local Status"
 QUOTA_NAME = "API Quota"
 
 # API
-BASE_API_URL = "https://developer.sepush.co.za/business/2.0"
+BASE_API_URL = "https://developer.sepush.co.za/business/3.0"
 REQUEST_TIMEOUT_S = 10
 
 STARTUP_MESSAGE = f"""

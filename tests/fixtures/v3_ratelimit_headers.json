@@ -1,0 +1,18 @@
+{
+  "captured": "2026-07",
+  "note": "x-ratelimit-* headers observed on live v3.0 responses for two account tiers",
+  "ratelimit_headers_observed": {
+    "key_a_daily_200": {
+      "x-ratelimit-limit": "200",
+      "x-ratelimit-remaining": "166",
+      "x-ratelimit-used": "34",
+      "x-ratelimit-reset": "2026-07-17T00:00:00+00:00"
+    },
+    "key_b_daily_50": {
+      "x-ratelimit-limit": "50",
+      "x-ratelimit-remaining": "36",
+      "x-ratelimit-used": "14",
+      "x-ratelimit-reset": "2026-07-17T00:00:00+00:00"
+    }
+  }
+}

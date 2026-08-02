@@ -1,0 +1,14 @@
+{
+  "country_id": "ZA",
+  "id": "za_wc_cpt_vawaterfront_pgv3",
+  "municipality": "City of Cape Town",
+  "name": "V & A Waterfront",
+  "province": "Western Cape",
+  "schedules": [
+    {
+      "auto_enabled": true,
+      "id": "capetown-7",
+      "type": "loadshedding"
+    }
+  ]
+}
