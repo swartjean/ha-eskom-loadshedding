@@ -10,6 +10,9 @@ from .const import (
     CAPE_TOWN_STATUS_ID,
     CAPE_TOWN_STATUS_NAME,
     DOMAIN,
+    FORECAST_ID,
+    FORECAST_NAME,
+    FORECAST_SENSOR_ICON,
     LOCAL_STATUS_ID,
     LOCAL_STATUS_NAME,
     LOCAL_STATUS_SENSOR_ICON,
@@ -54,6 +57,12 @@ async def async_setup_entry(hass, entry, async_add_devices):
                 entry,
                 sensor_id=QUOTA_ID,
                 friendly_name=QUOTA_NAME,
+            ),
+            LoadsheddingForecastSensor(
+                coordinator,
+                entry,
+                sensor_id=FORECAST_ID,
+                friendly_name=FORECAST_NAME,
             ),
         ]
     )
@@ -120,7 +129,10 @@ class LoadsheddingStatusSensor(EskomEntity, SensorEntity):
         time_updated = None
         if stage_updated:
             time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
-            time_updated = datetime.strptime(stage_updated, time_format)
+            try:
+                time_updated = datetime.strptime(stage_updated, time_format)
+            except ValueError:
+                time_updated = None
         return {
             "Area Name": area_name,
             "Time Updated": time_updated,
@@ -240,3 +252,67 @@ class LoadsheddingAPIQuotaSensor(EskomEntity, SensorEntity):
                 "Type": allowance["type"],
             }
         return None
+
+
+class LoadsheddingForecastSensor(EskomEntity, SensorEntity):
+    """Sensor exposing upcoming loadshedding events as a forecast attribute."""
+
+    _attr_has_entity_name = True
+
+    def __init__(self, coordinator, config_entry, sensor_id, friendly_name: str):
+        """Initialize."""
+        self.sensor_id = sensor_id
+        self.friendly_name = friendly_name
+        super().__init__(coordinator, config_entry)
+
+    @property
+    def unique_id(self):
+        """Return a unique ID to use for this entity."""
+        return f"{self.config_entry.entry_id}-{self.sensor_id}"
+
+    @property
+    def name(self):
+        """Return the friendly name of the sensor."""
+        return self.friendly_name
+
+    @property
+    def native_value(self):
+        """Return the number of upcoming loadshedding events."""
+        return len(self._get_events())
+
+    @property
+    def icon(self):
+        """Return the icon of the sensor."""
+        return FORECAST_SENSOR_ICON
+
+    def _extract_stage_int(self, note):
+        """Extract an integer stage from a note like "Stage 6"."""
+        match = re.search(r"\d+", note or "0")
+        return int(match.group()) if match else 0
+
+    @property
+    def extra_state_attributes(self):
+        """Return the upcoming events as a forecast array."""
+        events = self._get_events()
+        if not events:
+            return {"forecast": []}
+
+        forecast = []
+        for event in events:
+            forecast.append(
+                {
+                    "stage": self._extract_stage_int(event.get("note")),
+                    "start_time": event.get("start"),
+                    "end_time": event.get("end"),
+                }
+            )
+        return {"forecast": forecast}
+
+    def _get_events(self):
+        """Get events from coordinator data."""
+        if not self.coordinator.data:
+            return []
+        # On a swallowed network error the coordinator reports success with
+        # None values, so both lookups need None-tolerant fallbacks
+        area_info = self.coordinator.data.get("area_information") or {}
+        return area_info.get("events") or []

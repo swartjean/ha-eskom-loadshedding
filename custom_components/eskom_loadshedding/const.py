@@ -13,6 +13,7 @@ ISSUE_URL = "https://github.com/swartjean/ha-eskom-loadshedding/issues"
 STATUS_SENSOR_ICON = "mdi:lightning-bolt"
 LOCAL_STATUS_SENSOR_ICON = "mdi:home-lightning-bolt"
 QUOTA_SENSOR_ICON = "mdi:cloud-percent"
+FORECAST_SENSOR_ICON = "mdi:calendar-clock"
 
 # Platforms
 SENSOR = "sensor"
@@ -42,6 +43,7 @@ NATIONAL_STATUS_AREA_ID = "eskom"
 CAPE_TOWN_STATUS_AREA_ID = "capetown"
 LOCAL_STATUS_ID = "local"
 QUOTA_ID = "api_quota"
+FORECAST_ID = "forecast"
 
 # Entity Names
 LOCAL_EVENTS_NAME = "Local Events"
@@ -50,6 +52,7 @@ NATIONAL_SATUS_NAME = "National Status"
 CAPE_TOWN_STATUS_NAME = "Cape Town Status"
 LOCAL_STATUS_NAME = "Local Status"
 QUOTA_NAME = "API Quota"
+FORECAST_NAME = "Forecast"
 
 # API
 BASE_API_URL = "https://developer.sepush.co.za/business/3.0"
