@@ -51,6 +51,10 @@ mode: queued
 
 Note that by installing this integration you are using it at your own risk. Neither the creators of this integration, nor the EskomSePush team, will be held responsible for any inaccuracies or errors in the loadshedding information presented.
 
+## Upgrading from 1.x (EskomSePush API 2.0 → 3.0)
+
+EskomSePush are switching off their 2.0 API on 1 September 2026. From version 2.0.0 this integration uses API 3.0 and requires Home Assistant 2024.11 or newer. Existing configurations are migrated automatically and all entity ids are preserved; your existing API key keeps working. One manual step: open the integration's options and use "Re-select area" once to restore the Area/Region attributes on `sensor.loadshedding_local_status` — a repair issue will remind you until you do.
+
 ## Installation
 
 **Note that an EskomSePush API key is required in order to use this integration**
