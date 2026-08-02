@@ -117,8 +117,10 @@ class LoadsheddingStatusSensor(EskomEntity, SensorEntity):
         )
 
         # Convert time strings to datetimes:
-        time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
-        time_updated = datetime.strptime(stage_updated, time_format)
+        time_updated = None
+        if stage_updated:
+            time_format = "%Y-%m-%dT%H:%M:%S.%f%z"
+            time_updated = datetime.strptime(stage_updated, time_format)
         return {
             "Area Name": area_name,
             "Time Updated": time_updated,
@@ -182,8 +184,8 @@ class LoadsheddingAreaInfoSensor(EskomEntity, SensorEntity):
             currently_loadshedding = next_event_start <= current_time <= next_event_end
 
         return {
-            "Area": info["name"],
-            "Region": info["region"],
+            "Area": info.get("name"),
+            "Region": info.get("region"),
             "Currently Loadshedding": currently_loadshedding,
         }
 
@@ -213,7 +215,7 @@ class LoadsheddingAPIQuotaSensor(EskomEntity, SensorEntity):
     def native_value(self):
         """Return the native value of the sensor."""
         # Return the number of API calls remaining as the native sensor value
-        allowance = self.coordinator.data.get("allowance", {}).get("allowance", {})
+        allowance = (self.coordinator.data.get("allowance") or {}).get("allowance", {})
 
         if allowance:
             return int(allowance["limit"]) - int(allowance["count"])
@@ -228,7 +230,7 @@ class LoadsheddingAPIQuotaSensor(EskomEntity, SensorEntity):
     @property
     def extra_state_attributes(self):
         # Gather data from coordinator
-        allowance = self.coordinator.data.get("allowance", {}).get("allowance", {})
+        allowance = (self.coordinator.data.get("allowance") or {}).get("allowance", {})
 
         if allowance:
             return {
