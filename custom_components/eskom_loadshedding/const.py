@@ -55,6 +55,10 @@ QUOTA_NAME = "API Quota"
 BASE_API_URL = "https://developer.sepush.co.za/business/3.0"
 REQUEST_TIMEOUT_S = 10
 
+# Passed to the config flow as a description placeholder; hassfest rejects URLs
+# written directly into strings.json.
+SEPUSH_WEBSITE_URL = "https://sepush.co.za/"
+
 STARTUP_MESSAGE = f"""
 -------------------------------------------------------------------
 {NAME}

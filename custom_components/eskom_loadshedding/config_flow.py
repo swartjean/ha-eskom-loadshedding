@@ -20,6 +20,7 @@ from .const import (  # pylint: disable=unused-import
     DOMAIN,
     MIN_SCAN_PERIOD,
     PLATFORMS,
+    SEPUSH_WEBSITE_URL,
 )
 from .eskom_interface import EskomInterface
 from .esp_normalizers import EskomAuthError
@@ -243,7 +244,10 @@ class EskomFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         }
 
         return self.async_show_form(
-            step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
+            step_id="user",
+            data_schema=vol.Schema(data_schema),
+            errors=self._errors,
+            description_placeholders={"sepush_url": SEPUSH_WEBSITE_URL},
         )
 
     async def _show_area_config_form(self, user_input):

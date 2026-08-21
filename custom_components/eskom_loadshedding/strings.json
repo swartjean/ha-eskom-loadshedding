@@ -8,7 +8,7 @@
         },
         "step": {
             "user": {
-                "description": "This integration uses the EskomSePush API 3.0 (https://sepush.co.za/) to obtain loadshedding data. Please enter your API key to continue:",
+                "description": "This integration uses the EskomSePush API 3.0 to obtain loadshedding data. Get an API key at {sepush_url} and enter it to continue:",
                 "data": {
                     "api_key": "API Key"
                 }
