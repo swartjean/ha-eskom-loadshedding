@@ -58,7 +58,7 @@ class EskomInterface:
                 url=query_url,
                 headers=self.headers,
                 params=payload,
-                timeout=REQUEST_TIMEOUT_S,
+                timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT_S),
             ) as resp:
                 if "x-ratelimit-limit" in resp.headers:
                     self.latest_ratelimit = {

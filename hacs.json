@@ -1,7 +1,8 @@
 {
     "name": "Eskom Loadshedding Interface",
     "domains": [
-        "sensor"
+        "sensor",
+        "calendar"
     ],
     "iot_class": "Cloud Polling",
     "homeassistant": "2024.11.0"

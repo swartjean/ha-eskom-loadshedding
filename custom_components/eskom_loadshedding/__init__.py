@@ -117,7 +117,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    enabled_platforms = [p for p in PLATFORMS if entry.options.get(p, True)]
+    coordinator.platforms = enabled_platforms
+    await hass.config_entries.async_forward_entry_setups(entry, enabled_platforms)
 
     if not entry.update_listeners:
         entry.add_update_listener(async_reload_entry)
@@ -152,7 +154,10 @@ class EskomDataUpdateCoordinator(DataUpdateCoordinator):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Handle removal of an entry."""
-    unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+    unloaded = await hass.config_entries.async_unload_platforms(
+        entry, coordinator.platforms
+    )
 
     if unloaded:
         hass.data[DOMAIN].pop(entry.entry_id)

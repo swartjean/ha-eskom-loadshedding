@@ -1,10 +1,8 @@
 {
-    "name": "ludeeus/integration_blueprint",
-    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    "name": "Eskom Loadshedding Interface",
+    "image": "mcr.microsoft.com/devcontainers/python:3.14",
     "postCreateCommand": "scripts/setup",
-    "forwardPorts": [
-        8123
-    ],
+    "forwardPorts": [8123],
     "portsAttributes": {
         "8123": {
             "label": "Home Assistant",
@@ -37,5 +35,9 @@
         }
     },
     "remoteUser": "vscode",
-    "features": {}
+    "features": {
+        "ghcr.io/devcontainers-extra/features/apt-packages:1": {
+            "packages": "ffmpeg,libturbojpeg0,libpcap-dev,libavformat-dev,libavcodec-dev,libavdevice-dev,libavutil-dev"
+        }
+    }
 }
