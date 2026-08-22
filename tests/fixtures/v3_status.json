@@ -1,0 +1,16 @@
+{
+  "status": {
+    "capetown": {
+      "name": "Cape Town",
+      "next_stages": [],
+      "stage": "0",
+      "stage_updated": "2025-04-25T00:00:00.150529+02:00"
+    },
+    "eskom": {
+      "name": "Eskom",
+      "next_stages": [],
+      "stage": "0",
+      "stage_updated": "2025-05-15T22:00:00.748588+02:00"
+    }
+  }
+}

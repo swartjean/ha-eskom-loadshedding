@@ -3,11 +3,12 @@
         "error": {
             "auth": "The API key provided is not valid.",
             "bad_area": "No matching areas found or quota exceeded.",
-            "no_area_selection": "No area selected."
+            "no_area_selection": "No area selected.",
+            "cannot_connect": "Could not reach the EskomSePush API (network problem or daily quota exhausted). Try again later."
         },
         "step": {
             "user": {
-                "description": "This integration uses the EskomSePush API (https://sepush.co.za/) to obtain loadshedding data. Please enter your API key to continue:",
+                "description": "This integration uses the EskomSePush API 3.0 to obtain loadshedding data. Get an API key at {sepush_url} and enter it to continue:",
                 "data": {
                     "api_key": "API Key"
                 }
@@ -23,22 +24,46 @@
                 "data": {
                     "area_selection": "Area"
                 }
+            },
+            "reauth_confirm": {
+                "description": "The EskomSePush API rejected your API key. Please enter a valid key to continue:",
+                "data": {
+                    "api_key": "API Key"
+                }
             }
+        },
+        "abort": {
+            "reauth_successful": "Re-authentication was successful"
         }
     },
     "options": {
         "error": {
-            "auth": "The API key provided is not valid."
+            "auth": "The API key provided is not valid.",
+            "bad_area": "No matching areas found or quota exceeded.",
+            "cannot_connect": "Could not reach the EskomSePush API (network problem or daily quota exhausted). Try again later."
         },
         "step": {
             "user": {
                 "data": {
                     "api_key": "API Key",
                     "scan_period": "Scan Period (s)",
+                    "area_search": "Re-select area (leave empty to keep current)",
                     "sensor": "Enable Sensors",
                     "calendar": "Enable Calendars"
                 }
+            },
+            "area_selection": {
+                "description": "Please select your area from the list below:",
+                "data": {
+                    "area_selection": "Area"
+                }
             }
+        }
+    },
+    "issues": {
+        "v2_area_migrated": {
+            "title": "Re-select your loadshedding area",
+            "description": "This integration now uses EskomSePush API 3.0 (API 2.0 shuts down on 1 September 2026). Your schedule was migrated automatically, but the area name/region details could not be derived from the old configuration. Open the integration's options and use 'Re-select area' to restore them."
         }
     }
 }

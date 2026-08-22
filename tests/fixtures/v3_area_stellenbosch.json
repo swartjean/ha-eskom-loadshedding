@@ -1,0 +1,18 @@
+{
+  "country_id": "ZA",
+  "id": "za_wc_dc2_stellenbosch_g50w",
+  "municipality": "Stellenbosch",
+  "name": "Stellenbosch",
+  "province": "Western Cape",
+  "schedules": [
+    {
+      "auto_enabled": true,
+      "id": "eskme-2",
+      "type": "loadshedding"
+    },
+    {
+      "id": "eskde-8",
+      "type": "loadshedding"
+    }
+  ]
+}
