@@ -24,6 +24,7 @@ Platform | Description
 Entity | Description
 -- | --
 `sensor.loadshedding_api_quota` | The EskomSePush API quota associated with your API key.
+`sensor.loadshedding_forecast` | The number of upcoming loadshedding events for your area, with a `forecast` attribute listing each event's stage and start/end times
 `sensor.loadshedding_national_status` | The current national loadshedding stage for Eskom-supplied customers.
 `sensor.loadshedding_cape_town_status` | The current loadshedding stage for City of Cape Town customers.
 `sensor.loadshedding_local_status` | The current loadshedding stage for your specific area.
